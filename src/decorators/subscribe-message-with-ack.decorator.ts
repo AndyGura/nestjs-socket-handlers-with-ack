@@ -1,5 +1,5 @@
 import { SubscribeMessage } from '@nestjs/websockets';
-import { SocketRequestModel } from './src/socket-request.model';
+import { SocketRequestModel } from '../models/socket-request.model';
 
 export const SubscribeMessageWithAck: <T = string>(message: T) => MethodDecorator = (message) => {
     const defaultDecorator: MethodDecorator = SubscribeMessage(message);

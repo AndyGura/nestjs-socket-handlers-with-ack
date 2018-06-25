@@ -2,7 +2,7 @@
   "name": "nestjs-socket-handlers-with-ack",
   "version": "1.0.0",
   "description": "Gateway socket handler decorator with automatic acknowledgement callback call",
-  "main": "dist/index.js",
+  "main": "index.js",
   "dependencies": {
     "@nestjs/common": "^5.0.1",
     "@nestjs/core": "^5.0.1",
@@ -15,8 +15,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "tsc --declaration",
-    "postinstall": "tsc --declaration"
+    "build": "tsc --declaration"
   },
   "repository": {
     "type": "git",
