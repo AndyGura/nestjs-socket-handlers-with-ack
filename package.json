@@ -4,6 +4,7 @@
   "description": "Gateway socket handler decorator with automatic acknowledgement callback call",
   "main": "dist/index.js",
   "dependencies": {
+    "@nestjs/common": "^5.0.1",
     "@nestjs/core": "^5.0.1",
     "@nestjs/websockets": "^5.0.1",
     "@types/node": "^10.1.4",
@@ -14,8 +15,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "tsc",
-    "postinstall": "tsc"
+    "build": "tsc --declaration",
+    "postinstall": "tsc --declaration"
   },
   "repository": {
     "type": "git",
