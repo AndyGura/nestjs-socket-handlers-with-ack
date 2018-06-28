@@ -7,7 +7,7 @@ Install this module with this command:
 $ npm install --save nestjs-socket-handlers-with-ack
 ```
 In your gateway:
-```
+```typescript
 import { SubscribeMessageWithAck } from 'nestjs-socket-handlers-with-ack';
 
 @WebSocketGateway()
@@ -25,7 +25,7 @@ export class MyGateway {
 ```
 
 On the client (example for Angular):
-```
+```typescript
     check(1);// => "returned true"
     check(2);// => "returned false"
     check('asdf');// => "caught error 'Wrong number received'"
