@@ -1,5 +1,5 @@
 # nestjs-socket-handlers-with-ack
-Gateway socket handler decorator with automatic acknowledgement callback call
+Gateway socket handler decorator with automatic acknowledgement callback call for **[NestJS 5.x](https://nestjs.com/)** applications.
 
 ### Usage
 Install this module with this command:
@@ -8,6 +8,7 @@ $ npm install --save nestjs-socket-handlers-with-ack
 ```
 In your gateway:
 ```typescript
+import { WebSocketGateway } from '@nestjs/websockets';
 import { SubscribeMessageWithAck } from 'nestjs-socket-handlers-with-ack';
 
 @WebSocketGateway()
@@ -34,7 +35,7 @@ On the client (example for Angular):
         emit<boolean>('checkIsNumberOdd', num)
             .subscribe(
                 (result: boolean) => { console.log(`returned ${result}`); },
-                (error) => { console.log(`caught error '${result}'`); }
+                (error) => { console.log(`caught error '${error}'`); }
             );
     }
 
