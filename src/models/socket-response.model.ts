@@ -1,4 +1,4 @@
-export class SocketResponseModel {
+export interface SocketResponseModel {
 
     success: boolean;
     msg: any;
