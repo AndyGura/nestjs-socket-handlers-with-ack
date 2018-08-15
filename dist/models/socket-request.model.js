@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class SocketRequestModel {
     constructor(array) {
-        this.data = array[0];
-        this.callback = array[1];
+        if (array[array.length - 1] instanceof Function) {
+            this.callback = array.pop();
+        }
+        this.data = array.slice();
     }
 }
 exports.SocketRequestModel = SocketRequestModel;

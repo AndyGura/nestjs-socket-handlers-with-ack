@@ -2,11 +2,13 @@ import { SocketResponseModel } from './socket-response.model';
 
 export class SocketRequestModel {
 
-    data: any;
+    data: any[];
     callback: (response: SocketResponseModel) => void;
 
     constructor(array: any[]) {
-        this.data = array[ 0 ];
-        this.callback = array[ 1 ] as ((response: SocketResponseModel) => void);
+        if (array[array.length - 1] instanceof Function) {
+            this.callback = array.pop() as ((response: SocketResponseModel) => void);
+        }
+        this.data = array.slice();
     }
 }
