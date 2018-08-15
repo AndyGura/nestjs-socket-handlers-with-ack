@@ -2,6 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const websockets_1 = require("@nestjs/websockets");
 const socket_request_model_1 = require("../models/socket-request.model");
+const successCallback = (req, msg) => {
+    if (req.callback) {
+        req.callback({
+            success: true,
+            msg: msg
+        });
+    }
+};
+const errorCallback = (req, err) => {
+    if (req.callback) {
+        req.callback({
+            success: false,
+            msg: err.message
+        });
+    }
+};
 exports.SubscribeMessageWithAck = (message) => {
     const defaultDecorator = websockets_1.SubscribeMessage(message);
     return (target, key, descriptor) => {
@@ -9,23 +25,19 @@ exports.SubscribeMessageWithAck = (message) => {
         const func = result.value;
         result.value = function (socket, payload) {
             const req = new socket_request_model_1.SocketRequestModel(payload);
-            func.bind(this)(socket, ...req.data)
-                .then((msg) => {
-                if (req.callback) {
-                    req.callback({
-                        success: true,
-                        msg: msg
-                    });
+            try {
+                const syncCallResult = func.bind(this)(socket, ...req.data);
+                if (syncCallResult instanceof Promise) {
+                    syncCallResult
+                        .then(msg => successCallback(req, msg))
+                        .catch(err => errorCallback(req, err));
+                    return;
                 }
-            })
-                .catch((err) => {
-                if (req.callback) {
-                    req.callback({
-                        success: false,
-                        msg: err.message
-                    });
-                }
-            });
+                successCallback(req, syncCallResult);
+            }
+            catch (err) {
+                errorCallback(req, err);
+            }
         };
         Reflect.defineMetadata('__isMessageMapping', true, descriptor.value);
         Reflect.defineMetadata('message', message, descriptor.value);

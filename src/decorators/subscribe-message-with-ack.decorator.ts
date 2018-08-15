@@ -1,6 +1,24 @@
 import { SubscribeMessage } from '@nestjs/websockets';
 import { SocketRequestModel } from '../models/socket-request.model';
 
+const successCallback = (req: SocketRequestModel, msg: any) => {
+    if ( req.callback ) {
+        req.callback({
+            success: true,
+            msg: msg
+        });
+    }
+};
+
+const errorCallback = (req: SocketRequestModel, err: any) => {
+    if ( req.callback ) {
+        req.callback({
+            success: false,
+            msg: err.message
+        });
+    }
+};
+
 export const SubscribeMessageWithAck: <T = string>(message: T) => MethodDecorator = (message) => {
     const defaultDecorator: MethodDecorator = SubscribeMessage(message);
     return (target, key, descriptor) => {
@@ -8,25 +26,18 @@ export const SubscribeMessageWithAck: <T = string>(message: T) => MethodDecorato
         const func: Function = result.value;
         result.value = function (socket, payload) {
             const req = new SocketRequestModel(payload);
-            func.bind(this)(socket, ...req.data)
-                .then(
-                    (msg) => {
-                        if ( req.callback ) {
-                            req.callback({
-                                success: true,
-                                msg: msg
-                            });
-                        }
-                    })
-                .catch((err) => {
-                        if ( req.callback ) {
-                            req.callback({
-                                success: false,
-                                msg: err.message
-                            });
-                        }
-                    }
-                );
+            try {
+                const syncCallResult = func.bind(this)(socket, ...req.data);
+                if ( syncCallResult instanceof Promise ) {
+                    syncCallResult
+                        .then(msg => successCallback(req, msg))
+                        .catch(err => errorCallback(req, err));
+                    return;
+                }
+                successCallback(req, syncCallResult);
+            } catch (err) {
+                errorCallback(req, err)
+            }
         };
         Reflect.defineMetadata('__isMessageMapping', true, descriptor.value);
         Reflect.defineMetadata('message', message, descriptor.value);
