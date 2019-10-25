@@ -1,6 +1,6 @@
 {
   "name": "nestjs-socket-handlers-with-ack",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Gateway socket handler decorator with automatic acknowledgement callback call",
   "main": "dist/index.js",
   "dependencies": {
