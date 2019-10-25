@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const websockets_1 = require("@nestjs/websockets");
+const constants_1 = require("@nestjs/websockets/constants");
 const socket_request_model_1 = require("../models/socket-request.model");
 const successCallback = (req, msg) => {
     if (req.callback) {
@@ -39,8 +40,8 @@ exports.SubscribeMessageWithAck = (message) => {
                 errorCallback(req, err);
             }
         };
-        Reflect.defineMetadata('__isMessageMapping', true, descriptor.value);
-        Reflect.defineMetadata('message', message, descriptor.value);
+        Reflect.defineMetadata(constants_1.MESSAGE_MAPPING_METADATA, true, descriptor.value);
+        Reflect.defineMetadata(constants_1.MESSAGE_METADATA, message, descriptor.value);
         return result;
     };
 };
