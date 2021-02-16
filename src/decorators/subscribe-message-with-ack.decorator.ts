@@ -2,20 +2,20 @@ import {SubscribeMessage} from '@nestjs/websockets';
 import {MESSAGE_MAPPING_METADATA, MESSAGE_METADATA} from '@nestjs/websockets/constants';
 import {SocketRequestModel} from '../models/socket-request.model';
 
-const successCallback = (req: SocketRequestModel, msg: any) => {
+const successCallback = (req: SocketRequestModel, data: any) => {
     if (req.callback) {
         req.callback({
             success: true,
-            msg: msg
+            data
         });
     }
 };
 
-const errorCallback = (req: SocketRequestModel, err: any) => {
+const errorCallback = (req: SocketRequestModel, error: any) => {
     if (req.callback) {
         req.callback({
             success: false,
-            msg: err.message
+            data: error.message
         });
     }
 };
@@ -31,8 +31,8 @@ export const SubscribeMessageWithAck: <T = string>(message: T) => MethodDecorato
                 const syncCallResult = func.bind(this)(socket, ...req.data);
                 if (syncCallResult instanceof Promise) {
                     syncCallResult
-                        .then(msg => successCallback(req, msg))
-                        .catch(err => errorCallback(req, err));
+                        .then(data => successCallback(req, data))
+                        .catch(error => errorCallback(req, error));
                     return;
                 }
                 successCallback(req, syncCallResult);

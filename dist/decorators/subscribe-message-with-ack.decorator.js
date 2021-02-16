@@ -1,25 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SubscribeMessageWithAck = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const constants_1 = require("@nestjs/websockets/constants");
 const socket_request_model_1 = require("../models/socket-request.model");
-const successCallback = (req, msg) => {
+const successCallback = (req, data) => {
     if (req.callback) {
         req.callback({
             success: true,
-            msg: msg
+            data
         });
     }
 };
-const errorCallback = (req, err) => {
+const errorCallback = (req, error) => {
     if (req.callback) {
         req.callback({
             success: false,
-            msg: err.message
+            data: error.message
         });
     }
 };
-exports.SubscribeMessageWithAck = (message) => {
+const SubscribeMessageWithAck = (message) => {
     const defaultDecorator = websockets_1.SubscribeMessage(message);
     return (target, key, descriptor) => {
         const result = defaultDecorator(target, key, descriptor);
@@ -30,8 +31,8 @@ exports.SubscribeMessageWithAck = (message) => {
                 const syncCallResult = func.bind(this)(socket, ...req.data);
                 if (syncCallResult instanceof Promise) {
                     syncCallResult
-                        .then(msg => successCallback(req, msg))
-                        .catch(err => errorCallback(req, err));
+                        .then(data => successCallback(req, data))
+                        .catch(error => errorCallback(req, error));
                     return;
                 }
                 successCallback(req, syncCallResult);
@@ -45,4 +46,5 @@ exports.SubscribeMessageWithAck = (message) => {
         return result;
     };
 };
+exports.SubscribeMessageWithAck = SubscribeMessageWithAck;
 //# sourceMappingURL=subscribe-message-with-ack.decorator.js.map

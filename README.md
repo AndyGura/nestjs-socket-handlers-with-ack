@@ -43,9 +43,9 @@ On the client (example for Angular):
         return new Observable<T>(observer => {
             this.socket.emit(chanel, message, (data: any): void => {
                 if ( data.success ) {
-                    observer.next(data.msg as T);
+                    observer.next(data.data as T);
                 } else {
-                    observer.error(data.msg);
+                    observer.error(data.data);
                 }
                 observer.complete();
             });
